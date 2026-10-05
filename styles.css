@@ -193,6 +193,50 @@ body {
     font-weight: 600;
 }
 
+/* ========== غرفة التدريب التفاعلية ========== */
+.highlight-card {
+    border: 2px solid var(--gold);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), var(--bg-2));
+}
+
+.highlight-card .card-title {
+    color: var(--gold);
+}
+
+.practice-container {
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid var(--border);
+}
+
+.vexflow-wrapper {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.vexflow-wrapper svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.practice-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.practice-controls .play-btn {
+    width: 100%;
+    justify-content: center;
+}
+
 /* ========== القائمة السفلية ========== */
 .bottom-nav {
     position: fixed;
