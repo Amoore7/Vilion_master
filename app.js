@@ -40,7 +40,7 @@ const i18n = {
         progress: 'تقدمك', totalTime: 'إجمالي وقت التدريب', minutes: 'دقيقة',
         completedLessons: 'الدروس المكتملة', streak: 'أيام التدريب المتتالية',
         settings: 'الإعدادات', language: 'اللغة', switchLang: 'تغيير اللغة',
-        about: 'عن التطبيق', version: 'الإصدار: 2.1.0', resetProgress: 'إعادة تعيين التقدم',
+        about: 'عن التطبيق', version: 'الإصدار: 2.1.1', resetProgress: 'إعادة تعيين التقدم',
         home: 'الرئيسية', mainSections: 'الأقسام الرئيسية', lessons: 'درس',
         themeLabel: 'الثيم البصري', noteLabel: 'نظام تسمية النغمات',
         splashText: 'جاري تحضير الآلة...', backToList: '← رجوع للقائمة',
@@ -58,7 +58,7 @@ const i18n = {
         progress: 'Progress', totalTime: 'Total Practice Time', minutes: 'minutes',
         completedLessons: 'Completed Lessons', streak: 'Day Streak 🔥',
         settings: 'Settings', language: 'Language', switchLang: 'Switch Language',
-        about: 'About', version: 'Version: 2.1.0', resetProgress: 'Reset Progress',
+        about: 'About', version: 'Version: 2.1.1', resetProgress: 'Reset Progress',
         home: 'Home', mainSections: 'Main Sections', lessons: 'lessons',
         themeLabel: 'Visual Theme', noteLabel: 'Note Naming System',
         splashText: 'Preparing the instrument...', backToList: '← Back to List',
@@ -113,16 +113,14 @@ function updateNoteLabelsInUI() {
     });
 }
 
-// ========== السبلاش سكرين (تم الإصلاح) ==========
+// ========== السبلاش سكرين (مستقر وآمن) ==========
 function initSplashScreen() {
-    // استخدام window.onload يضمن اكتمال تحميل الـ DOM والموارد قبل بدء العد التنازلي
     window.addEventListener('load', () => {
         const splash = document.getElementById('splash-screen');
         if (!splash) return;
         
         setTimeout(() => {
             splash.classList.add('hidden');
-            // إخفاء العنصر بدلاً من حذفه لتجنب مشاكل الـ DOM
             setTimeout(() => {
                 splash.style.display = 'none';
             }, 800);
@@ -450,24 +448,39 @@ const HARMONY_LESSONS = {
     ]
 };
 
-// ========== دوال العرض والرسم ==========
+// ========== دوال العرض والرسم (مصححة لضمان ظهور النوتة) ==========
 function renderNoteOnStaff(noteName, containerId) {
     const container = document.getElementById(containerId);
-    if (!container || typeof Vex === 'undefined') return;
+    if (!container) return;
     container.innerHTML = '';
     
-    const { Factory, EasyScore, System } = Vex.Flow;
-    const vf = new Factory({ renderer: { elementId: containerId, width: 300, height: 120 } });
-    const score = vf.EasyScore();
-    const system = vf.System();
-    
-    const vexNote = noteName.toLowerCase().replace(/(\d)/, '/$1');
-    
-    system.addStave({
-        voices: [score.voice(score.notes(vexNote + '/q', { clef: 'treble' }))]
-    }).addClef('treble').addTimeSignature('4/4');
-    
-    vf.draw();
+    // التحقق من تحميل VexFlow
+    if (typeof Vex === 'undefined' || !Vex.Flow) {
+        container.innerHTML = `<div style="text-align:center; padding:20px; font-size:48px; color:var(--primary);"><br><small style="font-size:14px; color:var(--text-dim);">${getNoteLabel(noteName)}</small></div>`;
+        return;
+    }
+
+    try {
+        const { Factory, EasyScore, System } = Vex.Flow;
+        // أبعاد مناسبة للجوال والنوافذ المنبثقة
+        const width = Math.min(container.offsetWidth || 300, 500); 
+        
+        const vf = new Factory({ renderer: { elementId: containerId, width: width, height: 140 } });
+        const score = vf.EasyScore();
+        const system = vf.System();
+        
+        // تحويل C4 إلى c/4 لتنسيق VexFlow
+        const vexNote = noteName.toLowerCase().replace(/(\d)/, '/$1');
+        
+        system.addStave({
+            voices: [score.voice(score.notes(vexNote + '/q', { clef: 'treble' }))]
+        }).addClef('treble').addTimeSignature('4/4');
+        
+        vf.draw();
+    } catch (e) {
+        console.warn("VexFlow rendering failed:", e);
+        container.innerHTML = `<div style="text-align:center; padding:20px; font-size:48px; color:var(--primary);"><br><small style="font-size:14px; color:var(--text-dim);">${getNoteLabel(noteName)}</small></div>`;
+    }
 }
 
 // ========== فتح الأقسام ==========
@@ -507,7 +520,7 @@ function openScales() {
             `).join('')}
         </div>
     `;
-    openModal('🎼 المقامات', body, { type: 'section', name: 'scales' });
+    openModal(' المقامات', body, { type: 'section', name: 'scales' });
 }
 
 function switchSubTab(name, el) {
@@ -527,7 +540,7 @@ function showScale(scale) {
             <strong>${scale.nameAr || scale.name}</strong><br>${scale.desc}<br>
             <small style="color: var(--text-dim);">الصيغة: ${scale.formula}</small>
         </div>
-        <div id="${staffId}" class="vexflow-wrapper" style="margin: 15px 0;"></div>
+        <div id="${staffId}" class="vexflow-wrapper" style="margin: 15px 0; min-height:140px;"></div>
         <div class="scale-display">
             ${scale.notes.map(n => `
                 <div class="scale-note" data-original-note="${n}" onclick="playNoteByName('${n}', 0.8)">
@@ -542,9 +555,10 @@ function showScale(scale) {
     `;
     openModal(' ' + (scale.nameAr || scale.name), body, { type: 'section', name: 'scales' });
     
+    // تأخير بسيط لضمان وجود العنصر في DOM
     setTimeout(() => {
         renderNoteOnStaff(scale.notes[0], staffId);
-    }, 100);
+    }, 150);
 }
 
 function playScaleSequence(notes) {
@@ -580,7 +594,7 @@ function openArpeggios() {
             `).join('')}
         </div>
     `;
-    openModal('🎵 الأربيجيات', body, { type: 'section', name: 'arpeggios' });
+    openModal(' الأربيجيات', body, { type: 'section', name: 'arpeggios' });
 }
 
 function showArpeggio(arpeggio) {
@@ -590,7 +604,7 @@ function showArpeggio(arpeggio) {
             ${i18n[AppSettings.lang].backToList}
         </button>
         <div class="info-box"><strong>${arpeggio.nameAr || arpeggio.name}</strong><br>${arpeggio.desc}</div>
-        <div id="${staffId}" class="vexflow-wrapper" style="margin: 15px 0;"></div>
+        <div id="${staffId}" class="vexflow-wrapper" style="margin: 15px 0; min-height:140px;"></div>
         <div class="scale-display">
             ${arpeggio.notes.map(n => `
                 <div class="scale-note" data-original-note="${n}" onclick="playNoteByName('${n}', 0.8)">
@@ -604,7 +618,7 @@ function showArpeggio(arpeggio) {
         </div>
     `;
     openModal(' ' + (arpeggio.nameAr || arpeggio.name), body, { type: 'section', name: 'arpeggios' });
-    setTimeout(() => renderNoteOnStaff(arpeggio.notes[0], staffId), 100);
+    setTimeout(() => renderNoteOnStaff(arpeggio.notes[0], staffId), 150);
 }
 
 function openBowing() {
@@ -617,7 +631,7 @@ function openBowing() {
             </div>
         `).join('')}
     `;
-    openModal(' تقنيات القوس', body, { type: 'section', name: 'bowing' });
+    openModal('🎯 تقنيات القوس', body, { type: 'section', name: 'bowing' });
 }
 
 function showBowingTechnique(index) {
@@ -628,7 +642,7 @@ function showBowingTechnique(index) {
         </button>
         <div class="info-box">
             <strong>${t.name} - ${t.nameAr}</strong><br><br>${t.desc}<br><br>
-            <span style="color: var(--success);">💡 ${t.tip}</span>
+            <span style="color: var(--success);"> ${t.tip}</span>
         </div>
         <div style="text-align: center; margin-top: 15px;">
             <button class="play-btn" onclick="simulateBowingSound('${t.name}')">🔊 محاكاة صوتية</button>
@@ -683,9 +697,9 @@ function showHarmonyLevel(levelIndex) {
 
 // ========== باقي الأقسام والأدوات ==========
 function openExercises() { openModal('💪 التمارين', '<div class="info-box">قريباً - 50+ تمرين</div>'); }
-function openPieces() { openModal('🎭 المقطوعات', '<div class="info-box">قريباً - 30+ مقطوعة</div>'); }
-function openModes() { openModal('🌀 الموردين', '<div class="info-box">قريباً - 7 أوضاع</div>'); }
-function openTheory() { openModal('📖 النظرية', '<div class="info-box">قريباً - النظرية الكاملة</div>'); }
+function openPieces() { openModal(' المقطوعات', '<div class="info-box">قريباً - 30+ مقطوعة</div>'); }
+function openModes() { openModal(' الموردين', '<div class="info-box">قريباً - 7 أوضاع</div>'); }
+function openTheory() { openModal(' النظرية', '<div class="info-box">قريباً - النظرية الكاملة</div>'); }
 
 // ========== الميترونوم الدقيق (Web Audio Scheduler) ==========
 let currentBPM = 80;
@@ -706,7 +720,7 @@ function openMetronome() {
             </div>
         </div>
     `;
-    openModal('⏱️ الإيقاع', body);
+    openModal('️ الإيقاع', body);
 }
 
 function changeBPM(delta) {
@@ -764,7 +778,7 @@ function openTuner() {
             <button class="play-btn" id="tunerBtn" onclick="toggleTuner()">🎤 بدء الضبط</button>
         </div>
     `;
-    openModal('🎚️ الضبط', body);
+    openModal('️ الضبط', body);
 }
 
 let tunerStream = null; let tunerAnalyser = null; let tunerAnimId = null;
@@ -773,7 +787,7 @@ async function toggleTuner() {
     if (tunerStream) {
         tunerStream.getTracks().forEach(t => t.stop());
         tunerStream = null; cancelAnimationFrame(tunerAnimId);
-        btn.textContent = ' بدء الضبط';
+        btn.textContent = '🎤 بدء الضبط';
         document.getElementById('tunerNote').textContent = '-';
         document.getElementById('tunerCents').textContent = 'في انتظار الصوت...';
         return;
@@ -837,7 +851,7 @@ function openReferencePitches() {
             <button class="string-btn" onclick="playNote(659.25, 2)">E - مي</button>
         </div>
     `;
-    openModal('🔊 النغمات المرجعية', body);
+    openModal(' النغمات المرجعية', body);
 }
 
 function openScalePlayer() {
@@ -876,15 +890,8 @@ function openPracticeRoom() {
     `;
     openModal(' غرفة التدريب التفاعلية', body);
     setTimeout(() => { 
-        if(typeof Vex !== 'undefined') {
-            const { Factory, EasyScore, System } = Vex.Flow;
-            const vf = new Factory({ renderer: { elementId: 'vexflow-staff', width: 400, height: 160 } });
-            const score = vf.EasyScore();
-            const system = vf.System();
-            system.addStave({ voices: [score.voice(score.notes('C4/q, D4/q, E4/h, F4/h, G4/w', { clef: 'treble' }))] }).addClef('treble').addTimeSignature('4/4');
-            vf.draw();
-        }
-    }, 100);
+        renderNoteOnStaff('C4', 'vexflow-staff'); // استخدام الدالة الموحدة
+    }, 150);
 }
 
 function playPracticeSequence() {
