@@ -7,22 +7,31 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Violin Master">
     <meta name="theme-color" content="#1a1a2e">
-    
     <title>🎻 Violin Master Pro - تعلم الكمان</title>
-    
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎻</text></svg>">
-    
-    <!-- مكتبة VexFlow لعرض النوتة الموسيقية -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>">
     <script src="https://unpkg.com/vexflow/releases/vexflow-min.js"></script>
 </head>
 <body>
 
+<!-- سبلاش سكرين -->
+<div id="splash-screen">
+    <div class="splash-bow"></div>
+    <div class="splash-logo">
+        <svg viewBox="0 0 100 100" width="80" height="80">
+            <path d="M50 10 C30 10 20 30 20 50 C20 70 35 85 50 90 C65 85 80 70 80 50 C80 30 70 10 50 10 Z M50 25 C60 25 65 35 65 50 C65 65 55 75 50 75 C45 75 35 65 35 50 C35 35 40 25 50 25 Z" fill="currentColor"/>
+            <line x1="50" y1="75" x2="50" y2="95" stroke="currentColor" stroke-width="3"/>
+            <circle cx="50" cy="97" r="3" fill="currentColor"/>
+        </svg>
+    </div>
+    <div class="splash-text" data-i18n="splashText">جاري تحضير الآلة...</div>
+</div>
+
 <!-- الهيدر -->
 <div class="header">
     <div class="logo">
-        <span class="logo-icon">🎻</span>
+        <svg viewBox="0 0 100 100"><path d="M50 10 C30 10 20 30 20 50 C20 70 35 85 50 90 C65 85 80 70 80 50 C80 30 70 10 50 10 Z M50 25 C60 25 65 35 65 50 C65 65 55 75 50 75 C45 75 35 65 35 50 C35 35 40 25 50 25 Z" fill="currentColor"/><line x1="50" y1="75" x2="50" y2="95" stroke="currentColor" stroke-width="3"/></svg>
         <span data-i18n="appTitle">Violin Master</span>
     </div>
     <button class="lang-btn" onclick="toggleLang()">EN / عربي</button>
@@ -36,75 +45,56 @@
             <h1 data-i18n="welcome">مرحباً بك في رحلة الكمان</h1>
             <p data-i18n="welcomeDesc">تعلم الكمان بالطريقة الأكاديمية الغربية والعربية - من الأساسيات إلى الاحتراف</p>
             <div class="stats">
-                <div class="stat-box">
-                    <div class="stat-num">24+</div>
-                    <div class="stat-label" data-i18n="scales">مقام</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-num">150+</div>
-                    <div class="stat-label" data-i18n="lessons">درس</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-num">50+</div>
-                    <div class="stat-label" data-i18n="exercises">تمرين</div>
-                </div>
+                <div class="stat-box"><div class="stat-num">24+</div><div class="stat-label" data-i18n="scales">مقام</div></div>
+                <div class="stat-box"><div class="stat-num">150+</div><div class="stat-label" data-i18n="lessons">درس</div></div>
+                <div class="stat-box"><div class="stat-num">50+</div><div class="stat-label" data-i18n="exercises">تمرين</div></div>
             </div>
         </div>
 
         <div class="section-title">📚 <span data-i18n="mainSections">الأقسام الرئيسية</span></div>
         <div class="grid">
-            <!-- بطاقة غرفة التدريب التفاعلية -->
             <div class="card highlight-card" onclick="openPracticeRoom()">
                 <div class="card-icon">🎯</div>
                 <div class="card-title">غرفة التدريب التفاعلية</div>
                 <div class="card-desc">اعزف مع النوتة الحية واستمع للتصحيح الفوري</div>
             </div>
-
             <div class="card" onclick="openSection('scales')">
-                <div class="card-count">24</div>
-                <div class="card-icon">🎼</div>
+                <div class="card-count">24</div><div class="card-icon">🎼</div>
                 <div class="card-title" data-i18n="scales">المقامات</div>
                 <div class="card-desc" data-i18n="scalesDesc">غربية وعربية</div>
             </div>
             <div class="card" onclick="openSection('arpeggios')">
-                <div class="card-count">16</div>
-                <div class="card-icon"></div>
+                <div class="card-count">16</div><div class="card-icon">🎵</div>
                 <div class="card-title" data-i18n="arpeggios">الأربيجيات</div>
                 <div class="card-desc" data-i18n="arpeggiosDesc">توافقات وأكوردات</div>
             </div>
             <div class="card" onclick="openSection('bowing')">
-                <div class="card-count">12</div>
-                <div class="card-icon">🎯</div>
+                <div class="card-count">12</div><div class="card-icon">🎯</div>
                 <div class="card-title" data-i18n="bowing">تقنيات القوس</div>
                 <div class="card-desc" data-i18n="bowingDesc">الأقواس والحركات</div>
             </div>
             <div class="card" onclick="openSection('harmony')">
-                <div class="card-count">20</div>
-                <div class="card-icon">🎹</div>
+                <div class="card-count">20</div><div class="card-icon"></div>
                 <div class="card-title" data-i18n="harmony">الهارموني</div>
                 <div class="card-desc" data-i18n="harmonyDesc">التناغم والتوافق</div>
             </div>
             <div class="card" onclick="openSection('exercises')">
-                <div class="card-count">50+</div>
-                <div class="card-icon"></div>
+                <div class="card-count">50+</div><div class="card-icon">💪</div>
                 <div class="card-title" data-i18n="exercises">التمارين</div>
                 <div class="card-desc" data-i18n="exercisesDesc">Ševčík, Kreutzer</div>
             </div>
             <div class="card" onclick="openSection('pieces')">
-                <div class="card-count">30+</div>
-                <div class="card-icon">🎭</div>
+                <div class="card-count">30+</div><div class="card-icon">🎭</div>
                 <div class="card-title" data-i18n="pieces">المقطوعات</div>
                 <div class="card-desc" data-i18n="piecesDesc">مبتدئ إلى متقدم</div>
             </div>
             <div class="card" onclick="openSection('modes')">
-                <div class="card-count">14</div>
-                <div class="card-icon">🌀</div>
+                <div class="card-count">14</div><div class="card-icon">🌀</div>
                 <div class="card-title" data-i18n="modes">الموردين</div>
                 <div class="card-desc" data-i18n="modesDesc">الأوضاع الموسيقية</div>
             </div>
             <div class="card" onclick="openSection('theory')">
-                <div class="card-count">∞</div>
-                <div class="card-icon">📖</div>
+                <div class="card-count">∞</div><div class="card-icon">📖</div>
                 <div class="card-title" data-i18n="theory">النظرية</div>
                 <div class="card-desc" data-i18n="theoryDesc">النوتات والإيقاع</div>
             </div>
@@ -114,25 +104,21 @@
     <!-- تبويب الأدوات -->
     <div class="tab-content" id="tab-tools">
         <div class="section-title">🎵 <span data-i18n="tools">الأدوات المساعدة</span></div>
-        
         <div class="card" onclick="openMetronome()" style="margin-bottom: 12px;">
-            <div class="card-icon">️</div>
+            <div class="card-icon">⏱️</div>
             <div class="card-title" data-i18n="metronome">الإيقاع (Metronome)</div>
             <div class="card-desc" data-i18n="metronomeDesc">تحكم في السرعة والإيقاع</div>
         </div>
-
         <div class="card" onclick="openTuner()" style="margin-bottom: 12px;">
             <div class="card-icon">🎚️</div>
             <div class="card-title" data-i18n="tuner">الضبط (Tuner)</div>
             <div class="card-desc" data-i18n="tunerDesc">ضبط أوتار الكمان</div>
         </div>
-
         <div class="card" onclick="openReferencePitches()" style="margin-bottom: 12px;">
             <div class="card-icon">🔊</div>
             <div class="card-title" data-i18n="refPitch">نغمات مرجعية</div>
             <div class="card-desc" data-i18n="refPitchDesc">استمع لنغمات الأوتار</div>
         </div>
-
         <div class="card" onclick="openScalePlayer()">
             <div class="card-icon">🎶</div>
             <div class="card-title" data-i18n="scalePlayer">مشغل المقامات</div>
@@ -142,73 +128,41 @@
 
     <!-- تبويب التقدم -->
     <div class="tab-content" id="tab-progress">
-        <div class="section-title"> <span data-i18n="progress">تقدمك</span></div>
+        <div class="section-title">📊 <span data-i18n="progress">تقدمك</span></div>
         <div class="card" style="margin-bottom: 12px;">
             <div class="card-title" data-i18n="totalTime">إجمالي وقت التدريب</div>
-            <div style="font-size: 32px; color: var(--gold); margin: 10px 0;">
+            <div style="font-size: 32px; color: var(--primary); margin: 10px 0;">
                 <span id="totalTime">0</span> <span style="font-size: 14px;" data-i18n="minutes">دقيقة</span>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 0%" id="progressBar"></div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 0%" id="progressBar"></div></div>
         </div>
         <div class="card" style="margin-bottom: 12px;">
             <div class="card-title" data-i18n="completedLessons">الدروس المكتملة</div>
-            <div style="font-size: 32px; color: var(--gold); margin: 10px 0;">
-                <span id="completedLessons">0</span> / 150
-            </div>
+            <div style="font-size: 32px; color: var(--primary); margin: 10px 0;"><span id="completedLessons">0</span> / 150</div>
         </div>
         <div class="card">
-            <div class="card-title" data-i18n="streak">أيام التدريب المتتالية </div>
-            <div style="font-size: 32px; color: var(--gold); margin: 10px 0;">
-                <span id="streak">0</span>
-            </div>
+            <div class="card-title" data-i18n="streak">أيام التدريب المتتالية 🔥</div>
+            <div style="font-size: 32px; color: var(--primary); margin: 10px 0;"><span id="streak">0</span></div>
         </div>
     </div>
 
-    <!-- تبويب الإعدادات -->
-    <div class="tab-content" id="tab-settings">
-        <div class="section-title">⚙️ <span data-i18n="settings">الإعدادات</span></div>
-        <div class="card" style="margin-bottom: 12px;">
-            <div class="card-title" data-i18n="language">اللغة</div>
-            <button class="play-btn secondary" onclick="toggleLang()" style="margin-top: 10px;">
-                <span data-i18n="switchLang">تغيير اللغة</span>
-            </button>
-        </div>
-        <div class="card" style="margin-bottom: 12px;">
-            <div class="card-title" data-i18n="about">عن التطبيق</div>
-            <div class="card-desc" style="margin-top: 10px; line-height: 1.7;">
-                <p><strong>Violin Master Pro</strong></p>
-                <p data-i18n="aboutDesc">تطبيق شامل لتعليم الكمان بالطريقة الأكاديمية الغربية والعربية. يجمع بين النظرية الموسيقية والتمارين العملية.</p>
-                <p style="margin-top: 10px;" data-i18n="version">الإصدار: 1.1.0 (Interactive)</p>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-title" data-i18n="resetProgress">إعادة تعيين التقدم</div>
-            <button class="play-btn secondary" onclick="resetProgress()" style="margin-top: 10px; background: var(--accent); color: white; border: none;">
-                <span data-i18n="reset">إعادة تعيين</span>
-            </button>
-        </div>
-    </div>
+    <!-- تبويب الإعدادات (ديناميكي) -->
+    <div class="tab-content" id="tab-settings"></div>
 </div>
 
 <!-- القائمة السفلية -->
 <div class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('home', this)">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label" data-i18n="home">الرئيسية</span>
+        <span class="nav-icon">🏠</span><span class="nav-label" data-i18n="home">الرئيسية</span>
     </div>
     <div class="nav-item" onclick="switchTab('tools', this)">
-        <span class="nav-icon">🔧</span>
-        <span class="nav-label" data-i18n="tools">الأدوات</span>
+        <span class="nav-icon">🔧</span><span class="nav-label" data-i18n="tools">الأدوات</span>
     </div>
     <div class="nav-item" onclick="switchTab('progress', this)">
-        <span class="nav-icon">📊</span>
-        <span class="nav-label" data-i18n="progress">التقدم</span>
+        <span class="nav-icon">📊</span><span class="nav-label" data-i18n="progress">التقدم</span>
     </div>
     <div class="nav-item" onclick="switchTab('settings', this)">
-        <span class="nav-icon">⚙️</span>
-        <span class="nav-label" data-i18n="settings">الإعدادات</span>
+        <span class="nav-icon">⚙️</span><span class="nav-label" data-i18n="settings">الإعدادات</span>
     </div>
 </div>
 
@@ -223,8 +177,6 @@
     </div>
 </div>
 
-<!-- ربط ملف JavaScript -->
 <script src="app.js"></script>
-
 </body>
 </html>
