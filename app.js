@@ -2,7 +2,7 @@
 const AppSettings = {
     lang: localStorage.getItem('lang') || 'ar',
     theme: localStorage.getItem('theme') || 'dark',
-    noteSystem: localStorage.getItem('noteSystem') || 'arabic', // arabic, western, mixed
+    noteSystem: localStorage.getItem('noteSystem') || 'arabic',
     
     themes: {
         dark: { nameAr: 'ليلي ذهبي', nameEn: 'Dark Gold' },
@@ -84,7 +84,6 @@ function getNoteLabel(noteName) {
     const baseNote = noteName.replace(/[0-9]/g, '');
     const label = NOTE_LABELS[baseNote];
     if (!label) return noteName;
-    
     const suffix = noteName.match(/[0-9]/)?.[0] || '';
     if (AppSettings.noteSystem === 'arabic') return label.arabic + suffix;
     if (AppSettings.noteSystem === 'western') return label.western + suffix;
@@ -118,7 +117,6 @@ function updateNoteLabelsInUI() {
 function initSplashScreen() {
     const splash = document.getElementById('splash-screen');
     if (!splash) return;
-    
     setTimeout(() => {
         splash.classList.add('hidden');
         setTimeout(() => splash.remove(), 800);
@@ -164,7 +162,7 @@ function renderSettingsTab() {
     `).join('');
     
     settingsTab.innerHTML = `
-        <div class="section-title">️ <span data-i18n="settings">${i18n[AppSettings.lang].settings}</span></div>
+        <div class="section-title">⚙️ <span data-i18n="settings">${i18n[AppSettings.lang].settings}</span></div>
         
         <div class="settings-group">
             <span class="settings-label" data-i18n="language">${i18n[AppSettings.lang].language}</span>
@@ -312,6 +310,44 @@ const SCALES = {
     ]
 };
 
+// ========== بيانات الأربيجيات الأكاديمية ==========
+const ARPEGGIOS = {
+    western: [
+        { name: 'C Major', nameAr: 'دو ماجور', notes: ['C4','E4','G4','C5'], desc: 'الأكورد الأساسي - ثلاثي' },
+        { name: 'G Major', nameAr: 'صول ماجور', notes: ['G4','B4','D5','G5'], desc: 'ثلاثي ماجور' },
+        { name: 'D Major', nameAr: 'ري ماجور', notes: ['D4','F#4','A4','D5'], desc: 'ثلاثي ماجور' },
+        { name: 'A Minor', nameAr: 'لا مينور', notes: ['A4','C5','E5','A5'], desc: 'ثلاثي مينور طبيعي' },
+        { name: 'E Minor', nameAr: 'مي مينور', notes: ['E4','G4','B4','E5'], desc: 'ثلاثي مينور' },
+        { name: 'C Minor', nameAr: 'دو مينور', notes: ['C4','Eb4','G4','C5'], desc: 'ثلاثي مينور' },
+        { name: 'Diminished C', nameAr: 'دو متناقص', notes: ['C4','Eb4','Gb4','Bbb4'], desc: 'ثلاثي متناقص' },
+        { name: 'Augmented C', nameAr: 'دو زائد', notes: ['C4','E4','G#4','C5'], desc: 'ثلاثي زائد' }
+    ],
+    arabic: [
+        { name: 'Rast on C', nameAr: 'رست على دو', notes: ['C4','E4','G4','C5'], desc: 'توافق رست الأساسي' },
+        { name: 'Bayati on D', nameAr: 'بياتي على ري', notes: ['D4','F4','A4','D5'], desc: 'توافق بياتي (درجة 1-3-5)' },
+        { name: 'Hijaz on D', nameAr: 'حجاز على ري', notes: ['D4','F#4','A4','D5'], desc: 'توافق حجاز المميز' },
+        { name: 'Nahawand on C', nameAr: 'نهاوند على دو', notes: ['C4','Eb4','G4','C5'], desc: 'توافق نهاوند (مينور)' },
+        { name: 'Saba on D', nameAr: 'صبا على ري', notes: ['D4','F4','Ab4','D5'], desc: 'توافق صبا الحزين' },
+        { name: 'Sikah on E', nameAr: 'سيكاه على مي', notes: ['E4','G4','B4','E5'], desc: 'توافق سيكاه الفريد' }
+    ]
+};
+
+// ========== بيانات تقنيات القوس ==========
+const BOWING_TECHNIQUES = [
+    { name: 'Détaché', nameAr: 'ديتاشيه', desc: 'حركة قوس منفصلة لكل نوتة. الأساس في العزف.', tip: 'حافظ على استقامة القوس وتوزيع متساوٍ للضغط.' },
+    { name: 'Legato', nameAr: 'ليغاتو', desc: 'ربط النوتات بسلاسة دون انقطاع في الصوت.', tip: 'غير اتجاه القوس بنعومة عند الانتقال بين النوتات.' },
+    { name: 'Staccato', nameAr: 'ستاكاتو', desc: 'نوتات قصيرة ومنفصلة بحدة.', tip: 'استخدم معصمك لإيقاف القوس فجأة بعد كل نوتة.' },
+    { name: 'Spiccato', nameAr: 'سبيكاتو', desc: 'ارتداد القوس الطبيعي على الوتر.', tip: 'لا تضغط! دع وزن القوس وحده يسبب الارتداد.' },
+    { name: 'Martelé', nameAr: 'مارتيليه', desc: 'نوتات "مطرقة" قوية ومفاجئة.', tip: 'ابدأ بضغط قوي ثم حرر فوراً للسماح بالاهتزاز.' },
+    { name: 'Tremolo', nameAr: 'ترمولو', desc: 'تكرار سريع جداً لنفس النوتة.', tip: 'حرك رسغك فقط وليس ذراعك بالكامل.' },
+    { name: 'Sautillé', nameAr: 'سوتييه', desc: 'ارتداد سريع جداً في منتصف القوس.', tip: 'أسرع من السبيكاتو، يعتمد على مرونة خشب القوس.' },
+    { name: 'Col legno', nameAr: 'كول ليغنو', desc: 'العزف بخشب القوس بدلاً من الشعر.', tip: 'تقنية تأثيرية تعطي صوتاً إيقاعياً خشبياً.' },
+    { name: 'Sul ponticello', nameAr: 'سول بونتيشيللو', desc: 'العزف قرب الفرس (Bridge).', tip: 'يعطي صوتاً معدنياً وغامضاً. استخدم ضغطاً خفيفاً.' },
+    { name: 'Sul tasto', nameAr: 'سول تاستو', desc: 'العزف فوق لوحة الأصابع (Fingerboard).', tip: 'صوت ناعم وهوائي يشبه الناي.' },
+    { name: 'Flautando', nameAr: 'فلاتاندو', desc: 'عزف خفيف جداً وسريع يشبه الفلوت.', tip: 'لمس خفيف للوتر مع سرعة عالية للقوس.' },
+    { name: 'Circular Bowing', nameAr: 'قوس دائري', desc: 'حركة دائرية للقوس لتغيير الاتجاه بسلاسة.', tip: 'مثالية لل legato الطويل وتجنب الصدمات الصوتية.' }
+];
+
 // ========== فتح الأقسام ==========
 function openSection(section) {
     switch(section) {
@@ -380,14 +416,14 @@ function showScale(scale) {
             <button class="play-btn secondary" onclick='playScaleTogether(${JSON.stringify(scale.notes)})'>تشغيل معاً</button>
         </div>
         <div class="info-box" style="margin-top: 15px;">
-            <strong> نصيحة للتدريب:</strong><br>
+            <strong>💡 نصيحة للتدريب:</strong><br>
             • اعزف السلم صعوداً ونزولاً ببطء<br>
             • استخدم الميترونوم على 60 BPM<br>
             • ركز على نقاء النغمة ووضوح الأصابع<br>
             • كرر 10 مرات يومياً
         </div>
     `;
-    openModal('🎼 ' + (scale.nameAr || scale.name), body);
+    openModal(' ' + (scale.nameAr || scale.name), body);
 }
 
 function playScaleSequence(notes) {
@@ -400,9 +436,120 @@ function playScaleTogether(notes) {
     notes.forEach((note, i) => { setTimeout(() => playNoteByName(note, 1.5), i * 150); });
 }
 
+// ========== دوال فتح الأقسام المحدثة ==========
+function openArpeggios() {
+    const body = `
+        <div class="tabs">
+            <div class="tab active" onclick="switchSubTab('arp-western', this)">غربية</div>
+            <div class="tab" onclick="switchSubTab('arp-arabic', this)">عربية</div>
+        </div>
+        <div id="sub-arp-western" class="sub-tab-content">
+            ${ARPEGGIOS.western.map((a, i) => `
+                <div class="lesson-item" onclick='showArpeggio(${JSON.stringify(a)})'>
+                    <div class="lesson-title">${a.name}</div>
+                    <div style="font-size: 13px; color: var(--primary); margin: 4px 0;">${a.nameAr}</div>
+                    <div class="lesson-meta"><span>${a.notes.length} نغمات</span></div>
+                </div>
+            `).join('')}
+        </div>
+        <div id="sub-arp-arabic" class="sub-tab-content" style="display:none;">
+            ${ARPEGGIOS.arabic.map((a, i) => `
+                <div class="lesson-item" onclick='showArpeggio(${JSON.stringify(a)})'>
+                    <div class="lesson-title">${a.nameAr}</div>
+                    <div style="font-size: 13px; color: var(--primary); margin: 4px 0;">${a.name}</div>
+                    <div class="lesson-meta"><span>${a.notes.length} نغمات</span></div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    openModal('🎵 الأربيجيات', body);
+}
+
+function showArpeggio(arpeggio) {
+    const body = `
+        <div class="info-box">
+            <strong>${arpeggio.nameAr || arpeggio.name}</strong><br>
+            ${arpeggio.desc}<br>
+        </div>
+        <div class="scale-display">
+            ${arpeggio.notes.map(n => `
+                <div class="scale-note" data-original-note="${n}" onclick="playNoteByName('${n}', 0.8)">
+                    ${getNoteLabel(n)}
+                </div>
+            `).join('')}
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="play-btn" onclick='playScaleSequence(${JSON.stringify(arpeggio.notes)})'>▶ تشغيل تصاعدي</button>
+            <button class="play-btn secondary" onclick='playScaleTogether(${JSON.stringify(arpeggio.notes)})'>تشغيل معاً</button>
+        </div>
+        <div class="info-box" style="margin-top: 15px;">
+            <strong> نصيحة للأربيجيو:</strong><br>
+            • تأكد من وضوح كل نغمة قبل الانتقال للتالية<br>
+            • استخدم أصابعك بدقة لتجنب الانزلاق<br>
+            • جرب العزف بصعود ونزول (Arpeggio Up & Down)<br>
+            • ركز على توازن الضغط بين الأوتار
+        </div>
+    `;
+    openModal(' ' + (arpeggio.nameAr || arpeggio.name), body);
+}
+
+function openBowing() {
+    const body = `
+        <div class="info-box">
+            <strong>12 تقنية قوس أساسية ومتقدمة</strong><br>
+            اضغط على أي تقنية لمعرفة التفاصيل والنصائح العملية.
+        </div>
+        ${BOWING_TECHNIQUES.map((t, i) => `
+            <div class="lesson-item" onclick='showBowingTechnique(${i})'>
+                <div class="lesson-title">${t.name}</div>
+                <div style="font-size: 13px; color: var(--primary); margin: 4px 0;">${t.nameAr}</div>
+                <div class="lesson-meta"><span>${t.desc.substring(0, 40)}...</span></div>
+            </div>
+        `).join('')}
+    `;
+    openModal('🎯 تقنيات القوس', body);
+}
+
+function showBowingTechnique(index) {
+    const t = BOWING_TECHNIQUES[index];
+    const body = `
+        <div class="info-box">
+            <strong>${t.name} - ${t.nameAr}</strong><br><br>
+            ${t.desc}<br><br>
+            <span style="color: var(--success);">💡 ${t.tip}</span>
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="play-btn" onclick="simulateBowingSound('${t.name}')">🔊 محاكاة صوتية</button>
+        </div>
+        <div class="info-box" style="margin-top: 15px;">
+            <strong>تمرين عملي:</strong><br>
+            • عزف نغمة G4 مفتوحة باستخدام هذه التقنية<br>
+            • كرر 10 مرات بتركيز كامل<br>
+            • سجل نفسك واستمع للفرق بين المحاولات
+        </div>
+    `;
+    openModal(' ' + t.nameAr, body);
+}
+
+// محاكاة صوتية مبسطة لتقنيات القوس
+function simulateBowingSound(technique) {
+    stopAllAudio();
+    const freq = NOTE_FREQS['G4'];
+    
+    if (technique === 'Staccato') {
+        for(let i=0; i<4; i++) setTimeout(() => playNote(freq, 0.15, 'sawtooth'), i*200);
+    } else if (technique === 'Tremolo') {
+        for(let i=0; i<20; i++) setTimeout(() => playNote(freq, 0.05, 'sawtooth'), i*50);
+    } else if (technique === 'Martelé') {
+        playNote(freq, 0.3, 'square');
+    } else if (technique === 'Sul ponticello') {
+        playNote(freq * 1.02, 1.5, 'sine');
+    } else {
+        playNote(freq, 1.5, 'sawtooth');
+    }
+}
+
 // ========== باقي الأقسام (جاهزة للتعبئة) ==========
-function openArpeggios() { openModal(' الأربيجيات', '<div class="info-box">قريباً - محتوى غني بالأربيجيات</div>'); }
-function openBowing() { openModal('🎯 تقنيات القوس', '<div class="info-box">قريباً - 12 تقنية قوس احترافية</div>'); }
 function openHarmony() { openModal('🎹 الهارموني', '<div class="info-box">قريباً - علم التناغم الموسيقي</div>'); }
 function openExercises() { openModal('💪 التمارين', '<div class="info-box">قريباً - 50+ تمرين من Ševčík إلى Paganini</div>'); }
 function openPieces() { openModal('🎭 المقطوعات', '<div class="info-box">قريباً - 30+ مقطوعة من المبتدئ إلى المتقدم</div>'); }
@@ -438,7 +585,7 @@ function changeBPM(delta) {
 function toggleMetronome() {
     metronomeOn = !metronomeOn;
     const btn = document.getElementById('metroBtn');
-    if (metronomeOn) { btn.textContent = ' إيقاف'; startMetronome(); }
+    if (metronomeOn) { btn.textContent = '⏸ إيقاف'; startMetronome(); }
     else { btn.textContent = '▶ تشغيل'; clearInterval(metronomeInterval); }
 }
 function startMetronome() {
@@ -465,10 +612,10 @@ function openTuner() {
             <div class="tuner-meter">
                 <div class="tuner-indicator" id="tunerIndicator"></div>
             </div>
-            <button class="play-btn" id="tunerBtn" onclick="toggleTuner()">🎤 بدء الضبط</button>
+            <button class="play-btn" id="tunerBtn" onclick="toggleTuner()"> بدء الضبط</button>
         </div>
     `;
-    openModal('🎚️ الضبط', body);
+    openModal('️ الضبط', body);
 }
 
 let tunerStream = null; let tunerAnalyser = null; let tunerAnimId = null;
@@ -477,7 +624,7 @@ async function toggleTuner() {
     if (tunerStream) {
         tunerStream.getTracks().forEach(t => t.stop());
         tunerStream = null; cancelAnimationFrame(tunerAnimId);
-        btn.textContent = ' بدء الضبط';
+        btn.textContent = '🎤 بدء الضبط';
         document.getElementById('tunerNote').textContent = '-';
         document.getElementById('tunerCents').textContent = 'في انتظار الصوت...';
         return;
@@ -541,7 +688,7 @@ function openReferencePitches() {
             <button class="string-btn" onclick="playNote(659.25, 2)" style="font-size: 18px;">E - مي</button>
         </div>
     `;
-    openModal('🔊 النغمات المرجعية', body);
+    openModal(' النغمات المرجعية', body);
 }
 
 function openScalePlayer() {
