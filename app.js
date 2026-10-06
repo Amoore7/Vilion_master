@@ -348,6 +348,54 @@ const BOWING_TECHNIQUES = [
     { name: 'Circular Bowing', nameAr: 'قوس دائري', desc: 'حركة دائرية للقوس لتغيير الاتجاه بسلاسة.', tip: 'مثالية لل legato الطويل وتجنب الصدمات الصوتية.' }
 ];
 
+// ========== بيانات الهارموني العميق ==========
+const HARMONY_LESSONS = {
+    western: [
+        {
+            id: 'w-triad', name: 'البناء الثلاثي', nameAr: 'Triads Construction',
+            desc: 'الوحدة الأساسية للهارموني الغربي. يتكون من الجذر (Root)، الثالثة (Third)، والخامسة (Fifth).',
+            example: ['C4', 'E4', 'G4'], types: ['Major: جذر + ثالثة كبيرة + خامسة صحيحة', 'Minor: جذر + ثالثة صغيرة + خامسة صحيحة']
+        },
+        {
+            id: 'w-inversions', name: 'الانقلابات', nameAr: 'Inversions',
+            desc: 'إعادة ترتيب نغمات الأكورد بحيث لا يكون الجذر في الأسفل. يعطي تنوعاً في الحركة اللحنية.',
+            example: ['E4', 'G4', 'C5'], types: ['Root Position: الجذر في الأسفل', '1st Inversion: الثالثة في الأسفل', '2nd Inversion: الخامسة في الأسفل']
+        },
+        {
+            id: 'w-seventh', name: 'الأكوردات السباعية', nameAr: 'Seventh Chords',
+            desc: 'إضافة السابعة فوق البناء الثلاثي. أساس الجاز والهارموني المتقدم.',
+            example: ['C4', 'E4', 'G4', 'B4'], types: ['Major 7: ثالثة كبيرة + سابعة كبيرة', 'Dominant 7: ثالثة كبيرة + سابعة صغيرة', 'Minor 7: ثالثة صغيرة + سابعة صغيرة']
+        },
+        {
+            id: 'w-modulation', name: 'التحويل المقامي', nameAr: 'Modulation',
+            desc: 'الانتقال السلس من مقام لآخر باستخدام أكورد مشترك (Pivot Chord).',
+            example: ['C4', 'E4', 'G4', 'B4', 'D5'], types: ['Common Chord Modulation', 'Chromatic Modulation', 'Enharmonic Modulation']
+        }
+    ],
+    arabic: [
+        {
+            id: 'a-rast-chord', name: 'توافق الرست', nameAr: 'Rast Harmony',
+            desc: 'بناء أكورد على مقام رست يتطلب التعامل مع درجة الثالثة (E) التي تكون "ثلاثة أرباع" في السياق اللحني، لكن في التوافق تُعامل كثالثة كبيرة.',
+            example: ['C4', 'E4', 'G4'], types: ['التوافق الأساسي: 1-3-5', 'مع السابعة: 1-3-5-Bb (توافق رست سباعي)']
+        },
+        {
+            id: 'a-bayati-chord', name: 'توافق البياتي', nameAr: 'Bayati Harmony',
+            desc: 'البياتي يبدأ من الري (D). التوافق الأساسي يستخدم الدرجة الثانية المسطحة قليلاً في اللحن، لكن في الأكورد تُستخدم F طبيعية.',
+            example: ['D4', 'F4', 'A4'], types: ['التوافق الأساسي: 1-b3-5', 'الامتداد: إضافة C أو G للتلوين']
+        },
+        {
+            id: 'a-sikah-chord', name: 'توافق السيكاه', nameAr: 'Sikah Harmony',
+            desc: 'أكثر المقامات تحدياً توافقياً. الدرجة الثالثة (G) هي "ثلاثة أرباع". في التوافق الغربي نحاول محاكاتها باستخدام G طبيعية أو G# حسب السياق.',
+            example: ['E4', 'G4', 'B4'], types: ['التقليدي: استخدام G طبيعية كتقريب', 'المعاصر: استخدام G# لمحاكاة الربع صوت']
+        },
+        {
+            id: 'a-taqsim-harmony', name: 'الهارموني في التقاسيم', nameAr: 'Taqsim Harmony',
+            desc: 'في الموسيقى العربية التقليدية، الهارموني ضمني وليس صريحاً. يعتمد على تكرار درجات المقام وإبراز النغمات المميزة.',
+            example: ['D4', 'F4', 'A4', 'C5'], types: ['Pedal Point: تثبيت الوتر المفتوح كقاعدة', 'Drone: الاستمرار على درجة الركوز']
+        }
+    ]
+};
+
 // ========== فتح الأقسام ==========
 function openSection(section) {
     switch(section) {
@@ -483,7 +531,7 @@ function showArpeggio(arpeggio) {
             <button class="play-btn secondary" onclick='playScaleTogether(${JSON.stringify(arpeggio.notes)})'>تشغيل معاً</button>
         </div>
         <div class="info-box" style="margin-top: 15px;">
-            <strong> نصيحة للأربيجيو:</strong><br>
+            <strong>💡 نصيحة للأربيجيو:</strong><br>
             • تأكد من وضوح كل نغمة قبل الانتقال للتالية<br>
             • استخدم أصابعك بدقة لتجنب الانزلاق<br>
             • جرب العزف بصعود ونزول (Arpeggio Up & Down)<br>
@@ -528,7 +576,7 @@ function showBowingTechnique(index) {
             • سجل نفسك واستمع للفرق بين المحاولات
         </div>
     `;
-    openModal(' ' + t.nameAr, body);
+    openModal('🎯 ' + t.nameAr, body);
 }
 
 // محاكاة صوتية مبسطة لتقنيات القوس
@@ -549,12 +597,72 @@ function simulateBowingSound(technique) {
     }
 }
 
+// ========== دوال الهارموني الجديدة ==========
+function openHarmony() {
+    const body = `
+        <div class="tabs">
+            <div class="tab active" onclick="switchSubTab('harm-western', this)">غربي</div>
+            <div class="tab" onclick="switchSubTab('harm-arabic', this)">عربي</div>
+        </div>
+        <div id="sub-harm-western" class="sub-tab-content">
+            ${HARMONY_LESSONS.western.map((l, i) => `
+                <div class="lesson-item" onclick='showHarmonyLesson("western", ${i})'>
+                    <div class="lesson-title">${l.name}</div>
+                    <div style="font-size: 13px; color: var(--primary); margin: 4px 0;">${l.nameAr}</div>
+                    <div class="lesson-meta"><span>${l.types.length} أنواع</span></div>
+                </div>
+            `).join('')}
+        </div>
+        <div id="sub-harm-arabic" class="sub-tab-content" style="display:none;">
+            ${HARMONY_LESSONS.arabic.map((l, i) => `
+                <div class="lesson-item" onclick='showHarmonyLesson("arabic", ${i})'>
+                    <div class="lesson-title">${l.nameAr}</div>
+                    <div style="font-size: 13px; color: var(--primary); margin: 4px 0;">${l.name}</div>
+                    <div class="lesson-meta"><span>${l.types.length} أنواع</span></div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    openModal('🎹 الهارموني', body);
+}
+
+function showHarmonyLesson(tradition, index) {
+    const lesson = HARMONY_LESSONS[tradition][index];
+    const body = `
+        <div class="info-box">
+            <strong>${lesson.nameAr} (${lesson.name})</strong><br><br>
+            ${lesson.desc}<br><br>
+            <div style="margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px;">
+                <strong>الأنواع:</strong><br>
+                ${lesson.types.map(t => `• ${t}`).join('<br>')}
+            </div>
+        </div>
+        <div class="scale-display">
+            ${lesson.example.map(n => `
+                <div class="scale-note" data-original-note="${n}" onclick="playNoteByName('${n}', 1.5)">
+                    ${getNoteLabel(n)}
+                </div>
+            `).join('')}
+        </div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="play-btn" onclick='playScaleTogether(${JSON.stringify(lesson.example)})'> عزف التوافق</button>
+        </div>
+        <div class="info-box" style="margin-top: 15px;">
+            <strong>💡 تمرين تطبيقي:</strong><br>
+            • اعزف التوافق على كمانك ببطء<br>
+            • استمع للعلاقة بين النغمات<br>
+            • حاول عزفه في أوضاع مختلفة (Positions)<br>
+            • كرر حتى تشعر بالاستقرار التوافقي
+        </div>
+    `;
+    openModal('🎹 ' + lesson.nameAr, body);
+}
+
 // ========== باقي الأقسام (جاهزة للتعبئة) ==========
-function openHarmony() { openModal('🎹 الهارموني', '<div class="info-box">قريباً - علم التناغم الموسيقي</div>'); }
-function openExercises() { openModal('💪 التمارين', '<div class="info-box">قريباً - 50+ تمرين من Ševčík إلى Paganini</div>'); }
+function openExercises() { openModal(' التمارين', '<div class="info-box">قريباً - 50+ تمرين من Ševčík إلى Paganini</div>'); }
 function openPieces() { openModal('🎭 المقطوعات', '<div class="info-box">قريباً - 30+ مقطوعة من المبتدئ إلى المتقدم</div>'); }
 function openModes() { openModal('🌀 الموردين', '<div class="info-box">قريباً - 7 أوضاع موسيقية</div>'); }
-function openTheory() { openModal('📖 النظرية', '<div class="info-box">قريباً - النظرية الموسيقية الكاملة</div>'); }
+function openTheory() { openModal(' النظرية', '<div class="info-box">قريباً - النظرية الموسيقية الكاملة</div>'); }
 
 // ========== الأدوات ==========
 function openMetronome() {
@@ -585,7 +693,7 @@ function changeBPM(delta) {
 function toggleMetronome() {
     metronomeOn = !metronomeOn;
     const btn = document.getElementById('metroBtn');
-    if (metronomeOn) { btn.textContent = '⏸ إيقاف'; startMetronome(); }
+    if (metronomeOn) { btn.textContent = ' إيقاف'; startMetronome(); }
     else { btn.textContent = '▶ تشغيل'; clearInterval(metronomeInterval); }
 }
 function startMetronome() {
@@ -612,10 +720,10 @@ function openTuner() {
             <div class="tuner-meter">
                 <div class="tuner-indicator" id="tunerIndicator"></div>
             </div>
-            <button class="play-btn" id="tunerBtn" onclick="toggleTuner()"> بدء الضبط</button>
+            <button class="play-btn" id="tunerBtn" onclick="toggleTuner()">🎤 بدء الضبط</button>
         </div>
     `;
-    openModal('️ الضبط', body);
+    openModal('🎚️ الضبط', body);
 }
 
 let tunerStream = null; let tunerAnalyser = null; let tunerAnimId = null;
@@ -624,7 +732,7 @@ async function toggleTuner() {
     if (tunerStream) {
         tunerStream.getTracks().forEach(t => t.stop());
         tunerStream = null; cancelAnimationFrame(tunerAnimId);
-        btn.textContent = '🎤 بدء الضبط';
+        btn.textContent = ' بدء الضبط';
         document.getElementById('tunerNote').textContent = '-';
         document.getElementById('tunerCents').textContent = 'في انتظار الصوت...';
         return;
@@ -742,7 +850,7 @@ function openPracticeRoom() {
             </div>
         </div>
     `;
-    openModal(' غرفة التدريب التفاعلية', body);
+    openModal('🎯 غرفة التدريب التفاعلية', body);
     setTimeout(() => { renderVexFlow('vexflow-staff', 'C4/q, D4/q, E4/h, F4/h, G4/w'); }, 100);
 }
 
