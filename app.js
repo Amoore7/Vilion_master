@@ -113,18 +113,25 @@ function updateNoteLabelsInUI() {
     });
 }
 
-// ========== السبلاش سكرين ==========
+// ========== السبلاش سكرين (تم الإصلاح) ==========
 function initSplashScreen() {
-    const splash = document.getElementById('splash-screen');
-    if (!splash) return;
-    setTimeout(() => {
-        splash.classList.add('hidden');
-        setTimeout(() => splash.remove(), 800);
-    }, 2500);
+    // استخدام window.onload يضمن اكتمال تحميل الـ DOM والموارد قبل بدء العد التنازلي
+    window.addEventListener('load', () => {
+        const splash = document.getElementById('splash-screen');
+        if (!splash) return;
+        
+        setTimeout(() => {
+            splash.classList.add('hidden');
+            // إخفاء العنصر بدلاً من حذفه لتجنب مشاكل الـ DOM
+            setTimeout(() => {
+                splash.style.display = 'none';
+            }, 800);
+        }, 2500);
+    });
 }
 
 // ========== التنقل والنوافذ الذكية ==========
-let currentModalContext = null; // لتخزين حالة النافذة الحالية للرجوع إليها
+let currentModalContext = null; 
 
 function switchTab(tabName, el) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -149,7 +156,6 @@ function closeModal() {
 function goBackInModal() {
     if (!currentModalContext) return closeModal();
     
-    // إعادة فتح القسم الأصلي بناءً على السياق المخزن
     if (currentModalContext.type === 'section') {
         openSection(currentModalContext.name);
     } else if (currentModalContext.type === 'harmony-list') {
@@ -202,10 +208,10 @@ function renderSettingsTab() {
                        style="width:100%; margin-top:5px; accent-color:var(--primary);">
             </div>
         </div>
-    `);
+    `;
     
     settingsTab.innerHTML = `
-        <div class="section-title">⚙️ <span data-i18n="settings">${i18n[AppSettings.lang].settings}</span></div>
+        <div class="section-title">️ <span data-i18n="settings">${i18n[AppSettings.lang].settings}</span></div>
         
         <div class="settings-group">
             <span class="settings-label" data-i18n="language">${i18n[AppSettings.lang].language}</span>
@@ -455,7 +461,6 @@ function renderNoteOnStaff(noteName, containerId) {
     const score = vf.EasyScore();
     const system = vf.System();
     
-    // تحويل اسم النوتة لصيغة VexFlow (مثال: C4 -> c/4)
     const vexNote = noteName.toLowerCase().replace(/(\d)/, '/$1');
     
     system.addStave({
@@ -538,7 +543,6 @@ function showScale(scale) {
     openModal(' ' + (scale.nameAr || scale.name), body, { type: 'section', name: 'scales' });
     
     setTimeout(() => {
-        // رسم النوتة الأولى كمثال
         renderNoteOnStaff(scale.notes[0], staffId);
     }, 100);
 }
@@ -613,7 +617,7 @@ function openBowing() {
             </div>
         `).join('')}
     `;
-    openModal('🎯 تقنيات القوس', body, { type: 'section', name: 'bowing' });
+    openModal(' تقنيات القوس', body, { type: 'section', name: 'bowing' });
 }
 
 function showBowingTechnique(index) {
@@ -654,7 +658,7 @@ function openHarmony() {
             </div>
         `).join('')}
     `;
-    openModal(' الهارموني', body, { type: 'harmony-list' });
+    openModal('🎹 الهارموني', body, { type: 'harmony-list' });
 }
 
 function showHarmonyLevel(levelIndex) {
@@ -678,10 +682,10 @@ function showHarmonyLevel(levelIndex) {
 }
 
 // ========== باقي الأقسام والأدوات ==========
-function openExercises() { openModal(' التمارين', '<div class="info-box">قريباً - 50+ تمرين</div>'); }
+function openExercises() { openModal('💪 التمارين', '<div class="info-box">قريباً - 50+ تمرين</div>'); }
 function openPieces() { openModal('🎭 المقطوعات', '<div class="info-box">قريباً - 30+ مقطوعة</div>'); }
 function openModes() { openModal('🌀 الموردين', '<div class="info-box">قريباً - 7 أوضاع</div>'); }
-function openTheory() { openModal(' النظرية', '<div class="info-box">قريباً - النظرية الكاملة</div>'); }
+function openTheory() { openModal('📖 النظرية', '<div class="info-box">قريباً - النظرية الكاملة</div>'); }
 
 // ========== الميترونوم الدقيق (Web Audio Scheduler) ==========
 let currentBPM = 80;
@@ -710,7 +714,7 @@ function changeBPM(delta) {
     document.getElementById('bpmDisplay').textContent = currentBPM;
     if (isMetronomePlaying) {
         stopAllAudio();
-        toggleMetronome(); // إعادة التشغيل بالسرعة الجديدة
+        toggleMetronome();
     }
 }
 
@@ -721,7 +725,7 @@ function toggleMetronome() {
         btn.textContent = '▶ تشغيل';
     } else {
         isMetronomePlaying = true;
-        btn.textContent = '⏸ إيقاف';
+        btn.textContent = ' إيقاف';
         metronomeNextTime = getAudioCtx().currentTime + 0.1;
         scheduler();
     }
@@ -769,7 +773,7 @@ async function toggleTuner() {
     if (tunerStream) {
         tunerStream.getTracks().forEach(t => t.stop());
         tunerStream = null; cancelAnimationFrame(tunerAnimId);
-        btn.textContent = '🎤 بدء الضبط';
+        btn.textContent = ' بدء الضبط';
         document.getElementById('tunerNote').textContent = '-';
         document.getElementById('tunerCents').textContent = 'في انتظار الصوت...';
         return;
@@ -780,7 +784,7 @@ async function toggleTuner() {
         const source = ctx.createMediaStreamSource(tunerStream);
         tunerAnalyser = ctx.createAnalyser(); tunerAnalyser.fftSize = 2048;
         source.connect(tunerAnalyser);
-        btn.textContent = ' إيقاف'; detectPitch();
+        btn.textContent = '⏹ إيقاف'; detectPitch();
     } catch(e) { alert('يجب السماح بالوصول للميكروفون'); }
 }
 
@@ -870,7 +874,7 @@ function openPracticeRoom() {
             </div>
         </div>
     `;
-    openModal('🎯 غرفة التدريب التفاعلية', body);
+    openModal(' غرفة التدريب التفاعلية', body);
     setTimeout(() => { 
         if(typeof Vex !== 'undefined') {
             const { Factory, EasyScore, System } = Vex.Flow;
